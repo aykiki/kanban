@@ -12,25 +12,25 @@ import { Deploy } from 'grommet-icons';
 import { Circle } from 'react-spinners-css';
 import { appAuth } from '../../firebase';
 import { createUserWithEmailAndPassword } from '@firebase/auth';
+import { useAuth } from '../App/App';
 
 export const SignUp: FC = () => {
+  const auth = useAuth();
+
   const [loader, setLoader] = useState(false);
   const [hoverButton, setHoverBtn] = useState(false);
 
   const {
     register,
     handleSubmit,
-    reset,
     formState: { errors },
   } = useForm<TSignUp>({ resolver: zodResolver(signUpSchema) });
 
   const submitSignUp: SubmitHandler<TSignUp> = async (data) => {
     setLoader(true);
-    createUserWithEmailAndPassword(appAuth, data.email, data.password).finally(
-      () => {
-        setLoader(false);
-      }
-    );
+    auth!.signup!(data).finally(() => {
+      setLoader(false);
+    });
   };
 
   return (

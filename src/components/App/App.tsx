@@ -1,82 +1,156 @@
-import React, { FC, useEffect, useLayoutEffect } from 'react';
+import React, {
+  createContext,
+  FC,
+  useContext,
+  useEffect,
+  useState,
+} from 'react';
 import {
   BrowserRouter as Router,
   Switch,
   Route,
   Redirect,
-  useHistory,
 } from 'react-router-dom';
 import { SignUp } from '../SignUp/SignUp';
 import { SignIn } from '../SignIn/SignIn';
 import { appAuth } from '../../firebase';
-import { onAuthStateChanged } from 'firebase/auth';
+import {
+  createUserWithEmailAndPassword,
+  onAuthStateChanged,
+  signInWithEmailAndPassword,
+} from 'firebase/auth';
+import Home from '../Home';
+import { TSignIn, TSignUp } from '../../interfaces';
 
 export const App: FC = () => {
   return (
-    <Router>
-      <Switch>
-        <Route path="/(signin|signup)">
-          <PublicLayout>
-            <Switch>
-              <Route component={SignIn} path="/signin" />
-              <Route component={SignUp} path="/signup" />
-            </Switch>
-          </PublicLayout>
-        </Route>
-
-        <Route path="/home">
-          <PrivateLayout>
-            <Switch>
-              <Route path="/home" />
-            </Switch>
-          </PrivateLayout>
-        </Route>
-
-        <Redirect to="/signin" from="/" />
-      </Switch>
-    </Router>
+    <ProvideAuth>
+      <Router>
+        <Switch>
+          <PublicRoute component={SignIn} path="/signin" />
+          <PublicRoute component={SignUp} path="/signup" />
+          <PrivateRoute component={Home} path="/home" />
+          <Redirect to="/signin" from="/" />
+        </Switch>
+      </Router>
+    </ProvideAuth>
   );
 };
 
-interface ILayoutProps {
+interface IProvideAuthProps {
   children: React.ReactNode;
 }
+interface IAuthProps {
+  user: boolean;
+  signin(data: TSignIn): Promise<any>;
+  signup(data: TSignUp): Promise<any>;
+  signout(): Promise<any>;
+}
 
-export const PublicLayout = ({ children }: ILayoutProps) => {
-  const history = useHistory();
-  console.log(appAuth.currentUser);
-  useLayoutEffect(() => {
+export const authContext = createContext<null | IAuthProps>(null);
+
+export function ProvideAuth({ children }: IProvideAuthProps) {
+  const auth = useProvideAuth();
+  return <authContext.Provider value={auth}>{children}</authContext.Provider>;
+}
+
+function PrivateRoute({ component: Component, ...rest }: any) {
+  let auth = useAuth();
+  return (
+    <Route
+      {...rest}
+      render={(props) => {
+        if (auth?.user) {
+          return <Component {...props} />;
+        } else {
+          return (
+            <Redirect
+              to={{
+                pathname: '/',
+                state: {
+                  from: props.location,
+                },
+              }}
+            />
+          );
+        }
+      }}
+    />
+  );
+}
+
+function PublicRoute({ component: Component, ...rest }: any) {
+  let auth = useAuth();
+  return (
+    <Route
+      {...rest}
+      render={(props) => {
+        if (!auth?.user) {
+          return <Component {...props} />;
+        } else {
+          return (
+            <Redirect
+              to={{
+                pathname: '/home',
+                state: {
+                  from: props.location,
+                },
+              }}
+            />
+          );
+        }
+      }}
+    />
+  );
+}
+
+export const useAuth = () => {
+  return useContext(authContext);
+};
+
+function useProvideAuth(): IAuthProps {
+  const [user, setUser] = useState<any>();
+
+  const signin = (data: TSignIn) => {
+    return signInWithEmailAndPassword(appAuth, data.email, data.password).then(
+      (user) => {
+        setUser(user);
+        return user;
+      }
+    );
+  };
+  const signup = (data: TSignUp) => {
+    return createUserWithEmailAndPassword(
+      appAuth,
+      data.email,
+      data.password
+    ).then((user) => {
+      setUser(user);
+      return user;
+    });
+  };
+
+  const signout = () => {
+    return appAuth.signOut().then(() => {
+      setUser(false);
+    });
+  };
+
+  useEffect(() => {
     const unsubscribe = onAuthStateChanged(appAuth, (user) => {
       if (user) {
-        history.push('/home');
-        unsubscribe();
+        setUser(user);
+      } else {
+        setUser(false);
       }
     });
+    return () => unsubscribe();
   }, []);
 
-  return (
-    <>
-      <div>{children}</div>
-    </>
-  );
-};
-
-export const PrivateLayout = ({ children }: ILayoutProps) => {
-  const history = useHistory();
-  console.log(appAuth.currentUser);
-
-  useLayoutEffect(() => {
-    const unsubscribe = onAuthStateChanged(appAuth, (user) => {
-      if (!user) {
-        history.push('/');
-        unsubscribe();
-      }
-    });
-  }, []);
-
-  return (
-    <>
-      <div>{children}</div>
-    </>
-  );
-};
+  return {
+    user,
+    signin,
+    signup,
+    signout,
+  };
+}

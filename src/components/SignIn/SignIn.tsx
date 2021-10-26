@@ -10,8 +10,10 @@ import { signInSchema } from '../../validation';
 import { Login } from 'grommet-icons';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { appAuth } from '../../firebase';
+import { useAuth } from '../App/App';
 
 export const SignIn: FC = () => {
+  const auth = useAuth();
   const [loader, setLoader] = useState(false);
   const [hoverButton, setHoverBtn] = useState(false);
 
@@ -23,11 +25,9 @@ export const SignIn: FC = () => {
 
   const submitSignIn: SubmitHandler<TSignIn> = async (data) => {
     setLoader(true);
-    signInWithEmailAndPassword(appAuth, data.email, data.password).finally(
-      () => {
-        setLoader(false);
-      }
-    );
+    auth?.signin(data).finally(() => {
+      setLoader(false);
+    });
   };
 
   return (

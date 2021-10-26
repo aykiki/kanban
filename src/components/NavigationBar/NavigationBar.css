@@ -1,0 +1,38 @@
+.logo {
+  display: block;
+  background: rgba(143, 143, 187, 0.73);
+  padding: 8px;
+  border-radius: 12px;
+}
+
+.unAuthNav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-basis: 40%;
+  gap: 40%;
+  margin-top: 10%;
+}
+
+.svgPath {
+  fill: white;
+}
+
+.navButton {
+  background: transparent;
+  padding-left: 16px;
+  padding-right: 16px;
+  height: 40px;
+  font-size: 14px;
+  color: #05055b;
+  border: 1px solid rgba(143, 143, 187, 0.73);
+  border-radius: 12px;
+  cursor: pointer;
+}
+
+.navButton:hover {
+  border: 1px solid rgb(143, 143, 187);
+  background: rgb(143, 143, 187);
+  color: aliceblue;
+  transition: 0.4s;
+}

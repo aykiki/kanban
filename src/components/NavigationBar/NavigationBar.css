@@ -14,6 +14,12 @@
   margin-top: 10%;
 }
 
+.authNav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
 .svgPath {
   fill: white;
 }
@@ -35,4 +41,8 @@
   background: rgb(143, 143, 187);
   color: aliceblue;
   transition: 0.4s;
+}
+
+.cursor {
+  cursor: pointer;
 }

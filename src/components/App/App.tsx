@@ -19,7 +19,7 @@ import {
   onAuthStateChanged,
   signInWithEmailAndPassword,
 } from 'firebase/auth';
-import Home from '../Home';
+import Cabinet from '../Home/Cabinet';
 import { TSignIn, TSignUp } from '../../interfaces';
 
 export const App: FC = () => {
@@ -29,7 +29,9 @@ export const App: FC = () => {
         <Switch>
           <PublicRoute component={SignIn} path="/signin" />
           <PublicRoute component={SignUp} path="/signup" />
-          <PrivateRoute component={Home} path="/home" />
+          <PrivateRoute component={Cabinet} path="/home" />
+          <PrivateRoute path="/home/boards" />
+          <PrivateRoute path="/home/addboard" />
           <Redirect to="/signin" from="/" />
         </Switch>
       </Router>

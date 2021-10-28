@@ -8,8 +8,6 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { TSignIn } from '../../interfaces';
 import { signInSchema } from '../../validation';
 import { Login } from 'grommet-icons';
-import { signInWithEmailAndPassword } from 'firebase/auth';
-import { appAuth } from '../../firebase';
 import { useAuth } from '../App/App';
 
 export const SignIn: FC = () => {
@@ -25,7 +23,7 @@ export const SignIn: FC = () => {
 
   const submitSignIn: SubmitHandler<TSignIn> = async (data) => {
     setLoader(true);
-    auth?.signin(data).finally(() => {
+    await auth?.signin(data).finally(() => {
       setLoader(false);
     });
   };

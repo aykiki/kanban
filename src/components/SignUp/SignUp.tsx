@@ -9,9 +9,6 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { signUpSchema } from '../../validation';
 import { Deploy } from 'grommet-icons';
-import { Circle } from 'react-spinners-css';
-import { appAuth } from '../../firebase';
-import { createUserWithEmailAndPassword } from '@firebase/auth';
 import { useAuth } from '../App/App';
 
 export const SignUp: FC = () => {
@@ -28,7 +25,7 @@ export const SignUp: FC = () => {
 
   const submitSignUp: SubmitHandler<TSignUp> = async (data) => {
     setLoader(true);
-    auth!.signup!(data).finally(() => {
+    await auth!.signup!(data).finally(() => {
       setLoader(false);
     });
   };

@@ -1,0 +1,36 @@
+.nav {
+  overflow: hidden;
+  border-radius: 13px;
+  margin: 15px 80px;
+  padding: 16px 24px;
+}
+
+.sideBar {
+  display: flex;
+  width: fit-content;
+  align-items: center;
+}
+.wrapperBgrnd {
+  position: absolute;
+  min-height: 100vh;
+  min-width: 100vw;
+  background-image: url('/src/assets/background.jpeg');
+  background-attachment: scroll;
+  backdrop-filter: blur(84px);
+  -webkit-backdrop-filter: blur(84px);
+  background-color: rgba(255, 255, 255, 0.5);
+  filter: drop-shadow(0 0 1px rgba(255, 255, 255, 1));
+  overflow-y: scroll;
+}
+
+.bar {
+  display: flex;
+  gap: 40px;
+}
+
+.content {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 15vh;
+  font-family: 'Montserrat', sans-serif;
+}

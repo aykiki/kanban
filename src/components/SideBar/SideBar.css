@@ -1,0 +1,16 @@
+.list {
+  list-style: none;
+  padding: 0;
+}
+
+.list li {
+  display: flex;
+  align-items: center;
+  padding: 8px 0;
+  gap: 12px;
+  color: #05055b7d;
+  font-weight: bold;
+  font-size: 14px;
+  font-family: 'Montserrat', sans-serif;
+  cursor: pointer;
+}

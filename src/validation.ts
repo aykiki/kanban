@@ -30,3 +30,13 @@ export const signInSchema = z
     message: 'Password is to short',
     path: ['password'],
   });
+
+export const createBoardSchema = z
+  .object({
+    title: z.string().nonempty('The field is required'),
+    shortDescription: z.string().nonempty('Field is required'),
+  })
+  .refine((data) => data.title.length <= 30, {
+    message: 'Title is too long',
+    path: ['title'],
+  });

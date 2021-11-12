@@ -1,3 +1,10 @@
 .title {
   color: #05055b7d;
 }
+
+.boardTextField{
+  background: transparent;
+  border-radius: unset;
+  border: none;
+  border-bottom: 1px solid #05055b;
+}
